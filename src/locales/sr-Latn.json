@@ -1,0 +1,26 @@
+{
+  "auth": {
+    "login": {
+      "title": "Prijavi se",
+      "subtitle": "Dobrodošao nazad na Gamex",
+      "email": "Email adresa",
+      "emailPlaceholder": "ime@primer.rs",
+      "password": "Lozinka",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Zaboravio si lozinku?",
+      "submit": "Prijavi se",
+      "submitting": "Prijavljivanje...",
+      "orContinueWith": "ili nastavi sa",
+      "continueWithGoogle": "Google",
+      "continueWithFacebook": "Facebook",
+      "noAccount": "Nemaš nalog?",
+      "register": "Registruj se",
+      "errors": {
+        "invalidEmail": "Unesite ispravnu email adresu",
+        "passwordRequired": "Lozinka je obavezna",
+        "invalidCredentials": "Pogrešan email ili lozinka",
+        "generic": "Došlo je do greške. Pokušaj ponovo."
+      }
+    }
+  }
+}
