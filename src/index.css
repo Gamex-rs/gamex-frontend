@@ -8,6 +8,8 @@
   }
 
   html {
+    /* Native controls (checkboxes, selects, scrollbars) render in dark style. */
+    color-scheme: dark;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

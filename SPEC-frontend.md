@@ -290,12 +290,14 @@ Vite exposes env vars prefixed `VITE_` to the client bundle.
 | `VITE_API_BASE_URL` | Base URL for all API calls (e.g. `https://api.gamex.rs`) |
 | `VITE_MEDIA_BASE_URL` | Cloudflare media base URL (e.g. `https://media.gamex.rs`) |
 
-For local development, set these in `.env.local` (not committed to git):
+For local development, copy `.env.example` to `.env.local` (not committed to git):
 
 ```
-VITE_API_BASE_URL=http://localhost:5002
-VITE_MEDIA_BASE_URL=http://localhost:5001
+VITE_API_BASE_URL=
+VITE_MEDIA_BASE_URL=http://localhost:4566/gamex-media
 ```
+
+`VITE_API_BASE_URL` is **empty in development** so API calls stay same-origin and go through the Vite dev-server proxy, which routes by path like the production API gateway: `/api/v1/games`, `/api/v1/platforms` and `/api/v1/genres` to the Game Catalog Service (`:5001`), all other `/api` and `/hubs` paths to the User Library Service (`:5002`). An absolute URL would bypass the proxy and send every request to a single service.
 
 ---
 
@@ -310,7 +312,7 @@ npm run typecheck # tsc --noEmit
 npm run lint      # ESLint
 ```
 
-Vite dev server is configured to proxy `/api` to the local backend port and `/hubs` to the SignalR services.
+The Vite dev server proxies API paths to the local backend services by path (see §12).
 
 ---
 
