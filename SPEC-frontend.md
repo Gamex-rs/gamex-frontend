@@ -78,8 +78,8 @@ Unauthenticated users accessing protected routes are redirected to `/login` with
 
 - Feed of active listings (exchange + sale), most recent first
 - Horizontal filter chips: All / Exchange / Sale / Want to Buy
-- Each listing card shows: game cover, title, platform badges, type badge, user avatar + name, city, price (if for sale), condition
-- **Library status badge** on the game cover: "Owned" (green) or "Wishlist" (blue) shown for authenticated users — populated via `useGameLibraryStatuses`
+- Each listing card shows: game cover, title, **the listing's platform badge** (the platform the seller selected for that copy), format badge, type badge, user avatar + name, city, price (if for sale), condition
+- **Library status badge** on the game cover: "Owned" (green) and/or "Wishlist" (blue) shown for authenticated users — both badges can be shown at once — populated via `useGameLibraryStatuses`
 - Infinite scroll pagination (cursor-based)
 
 ### 5.2 Game Catalog (`/games`)
@@ -88,29 +88,39 @@ Unauthenticated users accessing protected routes are redirected to `/login` with
 - Filter panel: platform, genre
 - When authenticated and platform preferences are set, the platform filter is pre-populated with the user's preferences and the `platformIds` filter is sent automatically; the user can still override it manually
 - Game card grid: cover art, title, platforms, aggregate stats (owned / wishlist / exchange counts)
-- **Library status badge** on each game card cover: "Owned" or "Wishlist" for authenticated users
+- **Library status badge** on each game card cover: "Owned" and/or "Wishlist" for authenticated users
 
 ### 5.3 Game Detail (`/games/:id`)
 
 - Header: cover image, title, platforms, genres, release date, metacritic score
-- **Library status badge** prominently displayed on the cover (Owned / Wishlist) for authenticated users
+- **Library status badge** prominently displayed on the cover (Owned and/or Wishlist) for authenticated users
+- **"In my library" section** (authenticated users, if the game is in their library): one row per entry showing platform, format, Owned / Wishlist badges, and an "Edit" action — e.g. `PS5 · Physical · Owned`, `PC · Digital · Wishlist`
 - Aggregate stats bar: X users own this · Y have it on their wishlist · Z want to exchange
 - Active listings for this game (exchange + sale) — same card component as Home
-- "Add to my library" CTA button (opens library add flow); if the game is already in the user's library, shows "Edit library entry" instead
+- "Add to my library" CTA button (opens library add flow with the game pre-selected) — always available, since the same game can be added again on another platform or in another format
 
 ### 5.4 Library Add / Edit (`/library/add`, edit via `/library`)
 
 Multi-step form:
 
-1. **Search game** — autocomplete from Game Catalog; selecting a game captures the snapshot (title, release date, score, platforms, cover URL)
-2. **Set statuses** — toggle: Owned / Wishlist / For Exchange / For Sale / Want to Buy
-3. **Listing details** (shown only if For Exchange or For Sale is active):
+1. **Search game** — autocomplete from Game Catalog; the selected game's details (title, cover, platforms) come from the Game Catalog response and are used for display only — they are **not** sent to the User Library Service
+2. **Select platform & format** (required — the user cannot continue without both):
+   - Platform: single choice from the game's platforms only (from the Game Catalog response). Platforms from the user's preferences are listed first.
    - Format: Physical / Digital
+   - Combinations the user already has in their library for this game are shown disabled with an "Already in library" hint (from `useGameLibraryStatuses`). If the API still returns `409`, show an inline error with a link to edit the existing entry.
+3. **Set statuses** — independent toggles: Owned / Wishlist / For Exchange / For Sale / Want to Buy. Owned and Wishlist can both be on at the same time.
+4. **Listing details** (shown only if For Exchange or For Sale is active):
    - Condition (if Physical): New / Like New / Good / Acceptable
    - Price (if For Sale): number input
    - Preferred games (if For Exchange): free text
    - Notes: free text
-4. **Confirm** — preview and submit
+5. **Confirm** — preview (game, platform, format, statuses) and submit
+
+On submit, only `gameId`, `platformId`, `format`, statuses and listing details are sent to `POST /api/v1/users/me/library` — no game metadata. Editing an entry uses the same form (game is fixed; platform and format can be changed) and sends `PUT /api/v1/users/me/library/{entryId}`.
+
+If the API returns `409` with problem type `game-not-synced` (the game was imported from RAWG seconds ago and has not reached the User Library Service yet), the form keeps a "Saving…" state and retries automatically after the `Retry-After` delay, up to 3 times, before showing "This game is still being added to Gamex — please try again in a moment."
+
+The **My Library** page (`/library`) lists entries grouped by game; each game shows one row per platform/format copy with its own statuses and edit/delete actions.
 
 ### 5.5 Platform Preferences — Registration & Profile
 
@@ -124,10 +134,8 @@ Multi-step form:
 **In profile settings (`/profile`):**
 
 - "My Platforms" section with the same checkbox grid, pre-checked with current preferences
-- Saving calls `PUT /api/v1/users/me/platforms`
+- Saving calls `PUT /api/v1/users/me/platforms` with `{ "platformIds": [...] }` (IDs only — names/slugs are resolved by the backend)
 - `authStore` platform preferences are updated immediately on success so filtering takes effect without requiring a re-login
-
-On submit, the full game snapshot plus statuses are sent to `POST /api/v1/users/me/library`.
 
 ### 5.5 Messages (`/messages`, `/messages/:conversationId`)
 
@@ -192,7 +200,9 @@ const params = {
 
 ### Library Status Tags
 
-To annotate game cards with "Owned" or "Wishlist" badges, the frontend uses a `useGameLibraryStatuses(gameIds: string[])` hook. This hook calls `GET /api/v1/users/me/library/statuses?gameIds=...` with the IDs of games currently visible on the page (typically 20 per page). The result is cached by TanStack Query and reused across components for the same game IDs. The hook returns `null` and skips the API call when the user is not authenticated.
+To annotate game cards with "Owned" and/or "Wishlist" badges, the frontend uses a `useGameLibraryStatuses(gameIds: string[])` hook. This hook calls `GET /api/v1/users/me/library/statuses?gameIds=...` with the IDs of games currently visible on the page (typically 20 per page). The result is cached by TanStack Query and reused across components for the same game IDs. The hook returns `null` and skips the API call when the user is not authenticated.
+
+Per game the response carries aggregate `isOwned` / `isWishlist` flags (either or both may be true) plus an `entries` array (platform, format, flags per copy). Cards use the aggregate flags for the badges; a tooltip / small label lists the platforms, e.g. "Owned: PS5 · Wishlist: PC". The Game Detail page and the Library Add form use `entries` to show existing copies and disable duplicate platform/format combinations. Any library create / update / delete invalidates the cached statuses for that game.
 
 ---
 
@@ -280,12 +290,14 @@ Vite exposes env vars prefixed `VITE_` to the client bundle.
 | `VITE_API_BASE_URL` | Base URL for all API calls (e.g. `https://api.gamex.rs`) |
 | `VITE_MEDIA_BASE_URL` | Cloudflare media base URL (e.g. `https://media.gamex.rs`) |
 
-For local development, set these in `.env.local` (not committed to git):
+For local development, copy `.env.example` to `.env.local` (not committed to git):
 
 ```
-VITE_API_BASE_URL=http://localhost:5002
-VITE_MEDIA_BASE_URL=http://localhost:5001
+VITE_API_BASE_URL=
+VITE_MEDIA_BASE_URL=http://localhost:4566/gamex-media
 ```
+
+`VITE_API_BASE_URL` is **empty in development** so API calls stay same-origin and go through the Vite dev-server proxy, which routes by path like the production API gateway: `/api/v1/games`, `/api/v1/platforms` and `/api/v1/genres` to the Game Catalog Service (`:5001`), all other `/api` and `/hubs` paths to the User Library Service (`:5002`). An absolute URL would bypass the proxy and send every request to a single service.
 
 ---
 
@@ -300,7 +312,7 @@ npm run typecheck # tsc --noEmit
 npm run lint      # ESLint
 ```
 
-Vite dev server is configured to proxy `/api` to the local backend port and `/hubs` to the SignalR services.
+The Vite dev server proxies API paths to the local backend services by path (see §12).
 
 ---
 

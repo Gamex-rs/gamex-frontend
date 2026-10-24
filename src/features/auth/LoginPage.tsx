@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { authService } from '@/services/auth.service'
 import { cn } from '@/lib/utils'
+import logoSvg from '@/assets/logo.svg'
 
 const loginSchema = z.object({
   email: z.string().email('auth.login.errors.invalidEmail'),
@@ -60,11 +61,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 mb-4">
-            <GamexIcon />
-          </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Gamex</h1>
-          <p className="text-zinc-400 text-sm mt-1">{t('auth.login.subtitle')}</p>
+          <img src={logoSvg} alt="Gamex" className="h-10 mx-auto mb-3" />
+          <p className="text-zinc-400 text-sm">{t('auth.login.subtitle')}</p>
         </div>
 
         {/* Card */}
@@ -203,19 +201,6 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
-  )
-}
-
-function GamexIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M6 12h12M12 6v12M7 5h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
   )
 }
 

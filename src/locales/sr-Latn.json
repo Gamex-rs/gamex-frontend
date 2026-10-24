@@ -22,5 +22,97 @@
         "generic": "Došlo je do greške. Pokušaj ponovo."
       }
     }
+  },
+  "nav": {
+    "main": "Glavna navigacija",
+    "home": "Početna",
+    "games": "Igre",
+    "search": "Pretraga",
+    "library": "Biblioteka",
+    "messages": "Poruke",
+    "profile": "Profil",
+    "login": "Prijavi se"
+  },
+  "common": {
+    "errorTitle": "Nešto nije u redu",
+    "errorDescription": "Nismo uspeli da učitamo podatke. Proveri vezu i pokušaj ponovo.",
+    "retry": "Pokušaj ponovo",
+    "comingSoon": "Ova stranica stiže uskoro.",
+    "browseGames": "Pregledaj igre"
+  },
+  "pages": {
+    "home": "Početna",
+    "listings": "Oglasi",
+    "listing": "Oglas",
+    "user": "Profil korisnika",
+    "library": "Moja biblioteka",
+    "libraryAdd": "Dodaj igru",
+    "messages": "Poruke",
+    "notifications": "Obaveštenja",
+    "profile": "Moj profil",
+    "register": "Registracija",
+    "authCallback": "Prijava"
+  },
+  "catalog": {
+    "title": "Igre",
+    "resultCount_one": "{{formatted}} igra",
+    "resultCount_few": "{{formatted}} igre",
+    "resultCount_other": "{{formatted}} igara",
+    "metacritic": "Metacritic ocena",
+    "search": {
+      "placeholder": "Pretraži igre po nazivu",
+      "clear": "Obriši pretragu",
+      "searching": "Tražimo…",
+      "noResults": "Nema igara sa tim nazivom."
+    },
+    "filters": {
+      "toggle": "Filteri",
+      "platforms": "Platforme",
+      "genre": "Žanr",
+      "allGenres": "Svi žanrovi",
+      "none": "Još nema platformi.",
+      "clear": "Poništi filtere",
+      "clearAll": "Poništi pretragu i filtere"
+    },
+    "sort": {
+      "label": "Sortiraj",
+      "title": "Naziv (A–Ž)",
+      "popular": "Najpopularnije",
+      "newest": "Najnovije",
+      "topRated": "Najbolje ocenjene"
+    },
+    "card": {
+      "stats": "{{owned}} ima · {{wishlist}} želi · {{exchange}} menja"
+    },
+    "empty": {
+      "title": "Nema igara",
+      "filtered": "Nijedna igra ne odgovara pretrazi i filterima.",
+      "catalog": "Katalog je još prazan. Pretraži igru po nazivu da je dodaš."
+    },
+    "pagination": {
+      "label": "Stranice",
+      "previous": "Prethodna",
+      "next": "Sledeća",
+      "status": "{{page}} / {{total}}"
+    }
+  },
+  "gameDetail": {
+    "back": "Nazad",
+    "releaseDate": "Izlazak",
+    "platforms": "Platforme",
+    "genres": "Žanrovi",
+    "about": "O igri",
+    "stats": {
+      "owned_one": "korisnik ima ovu igru",
+      "owned_few": "korisnika imaju ovu igru",
+      "owned_other": "korisnika ima ovu igru",
+      "wishlist": "na listi želja",
+      "exchange": "za razmenu",
+      "sale": "na prodaju"
+    },
+    "notFound": {
+      "title": "Igra nije pronađena",
+      "description": "Možda je uklonjena ili je link pogrešan."
+    }
   }
 }

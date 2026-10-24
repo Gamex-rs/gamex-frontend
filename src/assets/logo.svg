@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 72" fill="none">
+  <defs>
+    <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#34D399"/>
+      <stop offset="1" stop-color="#FB923C"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    Wordmark: G a m [exchange-e] x
+    Font: Inter 800, 52px, baseline y=54
+    "Gam" ≈ 127 px wide starting at x=0
+    Exchange "e" occupies roughly 40 px (x=130 – 172)
+    "x"  starts at x=174
+  -->
+
+  <!-- "Gam" – emerald -->
+  <text x="0" y="54"
+        font-family="Inter, system-ui, -apple-system, sans-serif"
+        font-weight="800" font-size="52"
+        fill="#34D399">Gam</text>
+
+  <!-- Exchange "e": two opposing arrows that read as a letterform  -->
+  <!--   top bar  ──→  (green, upper stroke of e)                   -->
+  <path d="M 133 26 H 163" stroke="#34D399" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 158 21 L 164 26 L 158 31"
+        stroke="#34D399" stroke-width="5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!--   mid bar  ──   (gradient, cross-bar of e, shorter)           -->
+  <path d="M 133 40 H 158" stroke="url(#arrowGrad)" stroke-width="5" stroke-linecap="round"/>
+
+  <!--   bottom bar  ←──  (orange, lower stroke of e)               -->
+  <path d="M 168 54 H 138" stroke="#FB923C" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 143 49 L 137 54 L 143 59"
+        stroke="#FB923C" stroke-width="5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- "x" – orange -->
+  <text x="176" y="54"
+        font-family="Inter, system-ui, -apple-system, sans-serif"
+        font-weight="800" font-size="52"
+        fill="#FB923C">x</text>
+</svg>
